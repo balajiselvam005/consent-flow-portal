@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types';
 import UserCard from '@/components/UserCard';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ const Home = () => {
   const [sortBy, setSortBy] = useState<string>('top_rated');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const fetchCreators = async () => {
     setLoading(true);
@@ -100,9 +101,9 @@ const Home = () => {
             <Button
               size="lg"
               className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3"
-              onClick={() => navigate('/register')}
+              onClick={() => user ? navigate(`/profile/${user.id}`) : navigate('/register')}
             >
-              Get Started Free
+              {user ? 'Go to Dashboard' : 'Get Started Free'}
             </Button>
             <Button
               size="lg"
@@ -232,10 +233,10 @@ const Home = () => {
           </p>
           <Button
             size="lg"
-            onClick={() => navigate('/register')}
+            onClick={() => user ? navigate('/search') : navigate('/register')}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3"
           >
-            Join Digital Consent
+            {user ? 'Find Collaborators' : 'Join Digital Consent'}
           </Button>
         </motion.div>
       </section>

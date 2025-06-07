@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
@@ -8,10 +7,12 @@ import { User, Consent } from '@/types';
 import ConsentCard from '@/components/ConsentCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, Mail, Calendar, MapPin } from 'lucide-react';
+import { Star, Mail, Calendar, MapPin, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import CollaborationModal from '@/components/CollaborationModal';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showCollaborationModal, setShowCollaborationModal] = useState(false);
   const { toast } = useToast();
 
   const isOwnProfile = currentUser?.id === id;
@@ -93,6 +95,10 @@ const Profile = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleInviteToCollaborate = () => {
+    setShowCollaborationModal(true);
   };
 
   if (loading) {
@@ -181,7 +187,18 @@ const Profile = () => {
                   )}
                   
                   {user.bio && (
-                    <p className="text-slate-700 leading-relaxed">{user.bio}</p>
+                    <p className="text-slate-700 leading-relaxed mb-4">{user.bio}</p>
+                  )}
+
+                  {/* Invite to Collaborate Button */}
+                  {!isOwnProfile && currentUser && (
+                    <Button
+                      onClick={handleInviteToCollaborate}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Invite to Collaborate
+                    </Button>
                   )}
                 </div>
               </div>
@@ -308,6 +325,15 @@ const Profile = () => {
               Connect with {user.name} to start collaborating on amazing projects.
             </p>
           </motion.div>
+        )}
+
+        {/* Collaboration Modal */}
+        {showCollaborationModal && user && (
+          <CollaborationModal
+            isOpen={showCollaborationModal}
+            onClose={() => setShowCollaborationModal(false)}
+            targetUser={user}
+          />
         )}
       </div>
     </div>
