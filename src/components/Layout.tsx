@@ -1,20 +1,25 @@
 
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import { motion } from 'framer-motion';
+import NotificationBell from './NotificationBell';
+import { useAuth } from '@/hooks/useAuth';
 
 const Layout = () => {
+  const { user } = useAuth();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <Navbar />
-      <motion.main
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="pt-16"
-      >
+    <div className="min-h-screen bg-slate-50">
+      <div className="flex items-center justify-between p-4 bg-white border-b">
+        <Navbar />
+        {user && (
+          <div className="flex items-center space-x-4">
+            <NotificationBell />
+          </div>
+        )}
+      </div>
+      <main>
         <Outlet />
-      </motion.main>
+      </main>
     </div>
   );
 };

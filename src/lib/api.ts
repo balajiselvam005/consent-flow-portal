@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import { User, Consent, Template, ApiResponse, PaginatedResponse } from '@/types';
 
@@ -64,17 +63,26 @@ export const usersAPI = {
 };
 
 export const consentsAPI = {
-  acceptConsent: (id: string) =>
-    api.post<ApiResponse<Consent>>(`/consent/${id}/accept`),
+  acceptConsent: (id: string, data: { userId: string }) =>
+    api.post<ApiResponse<Consent>>(`/consent/${id}/accept`, data),
   
-  rejectConsent: (id: string) =>
-    api.post<ApiResponse<Consent>>(`/consent/${id}/reject`),
+  rejectConsent: (id: string, data: { userId: string }) =>
+    api.post<ApiResponse<Consent>>(`/consent/${id}/reject`, data),
   
   createConsent: (consentData: Partial<Consent>) =>
     api.post<ApiResponse<Consent>>('/consent', consentData),
   
   getConsent: (id: string) =>
     api.get<ApiResponse<Consent>>(`/consent/${id}`),
+  
+  deleteConsent: (id: string) =>
+    api.delete<ApiResponse<void>>(`/consent/${id}`),
+  
+  getPendingConsentsForUser: (userId: string) =>
+    api.get<ApiResponse<Consent[]>>(`/consent/user/${userId}?status=pending`),
+  
+  getSentInvitations: (creatorId: string) =>
+    api.get<ApiResponse<Consent[]>>(`/consent/creator/${creatorId}`),
 };
 
 export const templatesAPI = {

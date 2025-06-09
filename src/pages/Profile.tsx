@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, Mail, Calendar, MapPin, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CollaborationModal from '@/components/CollaborationModal';
+import SentInvitations from '@/components/SentInvitations';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,8 +55,10 @@ const Profile = () => {
   }, [id, isOwnProfile]);
 
   const handleAcceptConsent = async (consentId: string) => {
+    if (!currentUser) return;
+    
     try {
-      await consentsAPI.acceptConsent(consentId);
+      await consentsAPI.acceptConsent(consentId, { userId: currentUser.id });
       toast({
         title: "Success",
         description: "Consent accepted successfully.",
@@ -76,8 +79,10 @@ const Profile = () => {
   };
 
   const handleRejectConsent = async (consentId: string) => {
+    if (!currentUser) return;
+    
     try {
-      await consentsAPI.rejectConsent(consentId);
+      await consentsAPI.rejectConsent(consentId, { userId: currentUser.id });
       toast({
         title: "Success",
         description: "Consent rejected successfully.",
@@ -212,6 +217,7 @@ const Profile = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-6"
           >
             <Card>
               <CardHeader>
@@ -307,6 +313,9 @@ const Profile = () => {
                 </Tabs>
               </CardContent>
             </Card>
+
+            {/* Sent Invitations Section */}
+            <SentInvitations />
           </motion.div>
         )}
 
